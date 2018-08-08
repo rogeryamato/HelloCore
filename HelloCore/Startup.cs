@@ -97,7 +97,7 @@ namespace HelloCore
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
-                app.UseMyWebpack();
+                //app.UseMyWebpack();
             }
             else
             {
