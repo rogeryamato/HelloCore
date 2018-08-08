@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  hellocore:
+    image: hellocore
+    build:
+      context: .
+      dockerfile: HelloCore\Dockerfile
+
+  webapplication1:
+    image: ${DOCKER_REGISTRY}webapplication1
+    build:
+      context: .
+      dockerfile: ..\WebApplication1\Dockerfile
+
