@@ -13,7 +13,7 @@ namespace HelloCore.API
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class TaskController : BaseController
+    public class TaskController : BaseApiController
     {
         private readonly ITaskManager taskManager;
         public TaskController(ITaskManager taskManager)

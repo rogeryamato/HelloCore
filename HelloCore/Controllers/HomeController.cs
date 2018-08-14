@@ -15,6 +15,7 @@ namespace HelloCore.Controllers
 {
     public class HomeController : BaseController
     {
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
@@ -23,7 +24,7 @@ namespace HelloCore.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-
+            
             return View();
         }
 

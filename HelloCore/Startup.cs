@@ -12,10 +12,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using WebExtension;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace HelloCore
 {
@@ -74,20 +76,37 @@ namespace HelloCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(option=>option.Filters.Add(typeof(CustomExceptionFilterAttribute)))
+            services.AddMvc(option => option.Filters.Add(typeof(CustomExceptionFilterAttribute)))
                 // if don't want UTC format.
-                .AddJsonOptions(option=>option.SerializerSettings.DateFormatString="yyyy-MM-dd HH:mm:ss");
+                .AddJsonOptions(option => option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss");
             
-
             services.AddCors();
             services.SetupCookie();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
-            });
+                c.AddSecurityDefinition("oauth2", new OAuth2Scheme
+                {
+                    Type = "oauth2",
+                    Flow = "implicit",
+                    AuthorizationUrl = "http://localhost:51846/Login/index",
+                    Scopes = new Dictionary<string, string>
+                    {
+                        { "read", "Access read operations" },
+                        { "write", "Access write operations" }
+                    }
+                });
 
-            services.AddDbContextPool<HelloCoreDataContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("sqlserverdb")));
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                {
+                    { "oauth2", new[] { "readAccess", "writeAccess" } }
+                });
+            });
+            
+            services.AddDbContextPool<HelloCoreDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("sqlserverdb")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,7 +116,11 @@ namespace HelloCore
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
-                //app.UseMyWebpack();
+
+                //app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                //{
+                //    HotModuleReplacement = true
+                //});
             }
             else
             {
@@ -109,8 +132,16 @@ namespace HelloCore
 
 
             // invoke before MVC
+            app.UseCors(policyBuilder => policyBuilder.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod());
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
             app.UseAuthentication();
-            app.UseCors(policyBuilder => policyBuilder.WithOrigins("http://localhost:51846/").AllowAnyHeader().AllowAnyMethod());
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -120,12 +151,6 @@ namespace HelloCore
                 routes.MapSpaFallbackRoute(
                     name: "spa-fallback", 
                     defaults: new { controller = "Home", action = "Index" });
-            });
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
         }
         

@@ -14,7 +14,7 @@ namespace HelloCore.API
     [Route("api/[controller]")]
     [ApiController]
     [Authorize("admin")]
-    public class TaskItemController : BaseController
+    public class TaskItemController : BaseApiController
     {
         private readonly ITaskItemManager taskItemManager;
         public TaskItemController(ITaskItemManager taskItemManager)
@@ -22,6 +22,7 @@ namespace HelloCore.API
             this.taskItemManager = taskItemManager;
         }
 
+        [HttpGet]
         public TaskItem Get(int id)
         {
             return new TaskItem()

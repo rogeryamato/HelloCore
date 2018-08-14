@@ -9,11 +9,13 @@ using HelloCore.DomainModel.Models;
 using HelloCore.DomainModel.ViewModels;
 using HelloCore.Interface.Manager;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebExtension;
 
 namespace HelloCore.Controllers
 {
+    [AllowAnonymous]
     public class LoginController : BaseController
     {
         private readonly IUserManager userManager;

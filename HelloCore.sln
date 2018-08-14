@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloCore.Common", "HelloCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebExtension", "WebExtension\WebExtension.csproj", "{7E7A9500-6AE0-46D3-B864-D2FE2415DB9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloCore.Interface.Manually", "HelloCore.Interface.Manually\HelloCore.Interface.Manually.csproj", "{FD718874-7717-4D0C-8D69-AF7CA3CEFE3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloCore.Interface.Manually", "HelloCore.Interface.Manually\HelloCore.Interface.Manually.csproj", "{FD718874-7717-4D0C-8D69-AF7CA3CEFE3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
