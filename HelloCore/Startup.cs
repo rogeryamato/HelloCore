@@ -56,7 +56,7 @@ namespace HelloCore
 
 
             builder.RegisterType<ContextUnitOfWork>().As<IContextUnitOfWork>();
-            builder.RegisterType<HelloCoreDataContext>().As<IDbContext>();
+            builder.RegisterType<HelloCoreDataContext>().Named<IDbContext>("HelloCoreDB");
             builder.RegisterType<UnitOfWorkInterceptionBehaviorBase>();
             
 
@@ -133,7 +133,13 @@ namespace HelloCore
 
             // invoke before MVC
             app.UseCors(policyBuilder => policyBuilder.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod());
-            
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<HelloCoreDataContext>();
+                context.Database.EnsureCreated();
+            }
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

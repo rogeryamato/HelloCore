@@ -106,7 +106,7 @@ namespace HelloCore
 
         private ContextUnitOfWork GetUnitOfWork()
         {
-            return new ContextUnitOfWork(componentContext.Resolve<IDbContext>());
+            return new ContextUnitOfWork(componentContext.ResolveNamed<IDbContext>("HelloCoreDB"));
         }
 
     }
